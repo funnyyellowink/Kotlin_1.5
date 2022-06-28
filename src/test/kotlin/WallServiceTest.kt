@@ -8,14 +8,22 @@ class WallServiceTest {
     fun addTestPost() {
         val testWallService = WallService
         val result = testWallService.add(Post(1, 1, "Иван", 21042022, "Первый пост", Like, Repost))
+        assertTrue(result.id!=0)
+    }
+
+    @Test
+    fun successfulUpdate() {
+        val testWallService = WallService
+        testWallService.add(Post(1,1,"Иван",21042022,"Первый пост",Like,Repost))
+        val result = testWallService.update(Post(1,1,"Иван",21042022,"Измененный первый пост",Like,Repost))
         assertTrue(result)
     }
 
     @Test
-    fun likeAndRepost() {
+    fun failedUpdate() {
         val testWallService = WallService
         testWallService.add(Post(1,1,"Иван",21042022,"Первый пост",Like,Repost))
-        val result = testWallService.likeAndRepost(1,"Измененный текст")
-        assertTrue(result)
+        val result = testWallService.update(Post(2,1,"Иван",21042022,"Измененный первый пост",Like,Repost))
+        assertFalse(result)
     }
 }

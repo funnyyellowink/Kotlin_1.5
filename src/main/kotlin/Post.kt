@@ -19,43 +19,57 @@ object Repost {
 object WallService {
     var posts = emptyArray<Post>()
 
-    fun add(post: Post): Boolean {
-        posts+=post.copy(id = posts.size + 1)
-        println("Added ${post.authorName}`s post: " +
-                "\nPost: ${post.text}, posted at ${post.date}" +
-                "\nLiked: ${post.likes.count}, reposted: ${post.reposts.count} " +
-                "\n_____")
-        return posts.last().id != 0
+    fun add(post: Post): Post {
+        posts += post.copy(id = posts.size + 1)
+        println(
+            "Added ${post.authorName}`s post: " +
+                    "\nPost: ${post.text}, posted at ${post.date}" +
+                    "\nLiked: ${post.likes.count}, reposted: ${post.reposts.count} " +
+                    "\n_____"
+        )
+        return posts.last()
     }
 
-    fun likeAndRepost(id: Int, text: String): Boolean {
-        for (post in posts) {
-            if (post.id == id) {
-                posts[id].likes.count += 1
-                posts[id].reposts.count += 1
-                when {
-                    text != ("nothing") -> { posts[id-1].text = text }
-                }
-                println("Liked and reposted ${post.authorName}`s post: " +
-                        "\nPost: ${post.text}, posted at ${post.date}" +
-                        "\nLiked: ${post.likes.count}, reposted: ${post.reposts.count} " +
-                        "\n_____")
-            }
+    fun update(post: Post): Boolean {
+        var existenceOfPost = false
+        for ((index, oldPost) in posts.withIndex()) {
+//                var oldPost = posts[index]
+            var updatedPost = oldPost.copy(
+                oldPost.id,
+                oldPost.authorId,
+                oldPost.authorName,
+                oldPost.date,
+                text = post.text,
+                likes = post.likes,
+                reposts = post.reposts
+            )
+            posts.set(index, updatedPost)
+            existenceOfPost = true
         }
-        return text != "nothing"
+        println(
+            "Updated ${post.authorName}`s post: " +
+                    "\nPost: ${post.text}, posted at ${post.date}" +
+                    "\nLiked: ${post.likes.count}, reposted: ${post.reposts.count} " +
+                    "\n_____"
+        )
+        return existenceOfPost
     }
 }
 
+
 fun main() {
-//    WallService.add(Post(1,1,"Иван",21042022,"Первый пост",Like,Repost))
+    var post1 = Post(1,1,"Иван",21042022,"Пост номер один", likes = Like, reposts = Repost)
+    WallService.add(post1)
+    var updatedPost1 = Post(1,1,"Иван",21042022,"Обновленный пост номер один", likes = Like, reposts = Repost)
+    WallService.update(updatedPost1)
+}
 //    WallService.add(Post(1,1,"Петр",22042022,"Какой то второй пост",Like,Repost))
 //    WallService.add(Post(1,1,"Анна",23042022,"Пост номер три",Like,Repost))
 //
-//    WallService.likeAndRepost(1,"nothing")
+//    WallService.update()
 //    WallService.likeAndRepost(1,"Измененный пост номер один")
 //    WallService.likeAndRepost(1,"Еще раз изменили текст первого поста")
 //
 //    WallService.likeAndRepost(2,"nothing")
 //    WallService.likeAndRepost(2,"Измененный пост два")
 //    WallService.likeAndRepost(2,"Еще раз изменили текст поста номер два")
-}
