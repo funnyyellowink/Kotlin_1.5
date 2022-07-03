@@ -27,7 +27,8 @@ data class Post (
     var markedAsAds: Boolean?,
     var isFavourite: Boolean?,
     var donut: Donut?,
-    var postponedId: Int?
+    var postponedId: Int?,
+    var attachments: Array<Attachment>?
 )
 object Comment {
     //TODO
@@ -94,7 +95,11 @@ object WallService {
 }
 
 fun main() {
-    val post1= Post(1,
+    val photo = Photo(1,1,1,1)
+    val photoAttachment = PhotoAttachment("photo",photo)
+
+    val post1 = Post(
+        1,
         1,
         1,
         1,
@@ -120,7 +125,8 @@ fun main() {
         null,
         null,
         null,
-        null
+        null,
+        attachments = arrayOf(photoAttachment)
     )
     WallService.add(post1)
     val post2= Post(2,
@@ -136,6 +142,7 @@ fun main() {
         null,
         Like,
         Repost,
+        null,
         null,
         null,
         null,
@@ -178,6 +185,7 @@ fun main() {
         null,
         null,
         null,
+        null,
         null
     )
    val updatedPost2 = Post(3,
@@ -193,6 +201,7 @@ fun main() {
        null,
        Like,
        Repost,
+       null,
        null,
        null,
        null,

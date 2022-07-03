@@ -30,6 +30,7 @@ class WallServiceTestAdd {
             null,
             null,
             null,
+            null,
             null
         ))
         assertTrue(result.id!=0)

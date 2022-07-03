@@ -31,6 +31,7 @@ class WallserviceTestUpdateFailed {
             null,
             null,
             null,
+            null,
             null
         ))
         val result = testWallService.update(Post(3,
@@ -46,6 +47,7 @@ class WallserviceTestUpdateFailed {
             null,
             Like,
             Repost,
+            null,
             null,
             null,
             null,
