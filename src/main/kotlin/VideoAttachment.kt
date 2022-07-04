@@ -1,2 +1,3 @@
-class VideoAttachment(override val type: String = "video", var video: Video) : Attachment {
+class VideoAttachment (var video: Video) : Attachment {
+    override val type: String = "video"
 }

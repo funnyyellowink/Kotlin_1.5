@@ -1,2 +1,3 @@
-class PhotoAttachment(override val type: String = "photo", var photo : Photo) : Attachment {
+class PhotoAttachment (var photo : Photo) : Attachment {
+    override val type: String = "photo"
 }

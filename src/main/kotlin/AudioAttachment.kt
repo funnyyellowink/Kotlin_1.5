@@ -1,2 +1,3 @@
-class AudioAttachment(override val type: String = "audio", var audio: Audio) :Attachment {
+class AudioAttachment (var audio: Audio) :Attachment {
+    override val type: String = "audio"
 }

@@ -59,7 +59,6 @@ object Donut {
 }
 object WallService {
     private var posts = emptyArray<Post>()
-
     fun add(post: Post): Post {
         posts += post.copy(id = posts.size + 1)
         println(
@@ -75,6 +74,7 @@ object WallService {
         var existenceOfPost = false
         for ((index, oldPost) in posts.withIndex()) {
             if (post.id == oldPost.id) {
+                println("found such post")
                 existenceOfPost = true
                 val updatedPost = oldPost.copy(
                                     id = oldPost.id,
@@ -86,17 +86,21 @@ object WallService {
                 )
                 posts[index] = updatedPost
             } else {
+                println("couldnt find such post")
                 existenceOfPost = false
             }
 
         }
         return existenceOfPost
     }
+    fun clear() {
+        WallService.posts = emptyArray()
+    }
 }
 
 fun main() {
     val photo = Photo(1,1,1,1)
-    val photoAttachment = PhotoAttachment("photo",photo)
+    val photoAttachment = PhotoAttachment(photo)
 
     val post1 = Post(
         1,

@@ -1,2 +1,3 @@
-class GraffitiAttachment(override val type: String = "graffiti", var graffiti: Graffiti) : Attachment {
+class GraffitiAttachment (var graffiti: Graffiti) : Attachment {
+    override val type: String = "graffiti"
 }

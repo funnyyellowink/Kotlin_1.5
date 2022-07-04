@@ -1,2 +1,3 @@
-class DocAttachment(override val type: String = "doc", var doc: Doc) :Attachment {
+class DocAttachment (var doc: Doc) :Attachment {
+    override val type: String = "doc"
 }
