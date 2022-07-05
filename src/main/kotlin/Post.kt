@@ -27,7 +27,8 @@ data class Post (
     var markedAsAds: Boolean?,
     var isFavourite: Boolean?,
     var donut: Donut?,
-    var postponedId: Int?
+    var postponedId: Int?,
+    var attachments: Array<Attachment>?
 )
 object Comment {
     //TODO
@@ -58,7 +59,6 @@ object Donut {
 }
 object WallService {
     private var posts = emptyArray<Post>()
-
     fun add(post: Post): Post {
         posts += post.copy(id = posts.size + 1)
         println(
@@ -74,6 +74,7 @@ object WallService {
         var existenceOfPost = false
         for ((index, oldPost) in posts.withIndex()) {
             if (post.id == oldPost.id) {
+                println("found such post")
                 existenceOfPost = true
                 val updatedPost = oldPost.copy(
                                     id = oldPost.id,
@@ -85,16 +86,24 @@ object WallService {
                 )
                 posts[index] = updatedPost
             } else {
+                println("couldnt find such post")
                 existenceOfPost = false
             }
 
         }
         return existenceOfPost
     }
+    fun clear() {
+        WallService.posts = emptyArray()
+    }
 }
 
 fun main() {
-    val post1= Post(1,
+    val photo = Photo(1,1,1,1)
+    val photoAttachment = PhotoAttachment(photo)
+
+    val post1 = Post(
+        1,
         1,
         1,
         1,
@@ -120,7 +129,8 @@ fun main() {
         null,
         null,
         null,
-        null
+        null,
+        attachments = arrayOf(photoAttachment)
     )
     WallService.add(post1)
     val post2= Post(2,
@@ -136,6 +146,7 @@ fun main() {
         null,
         Like,
         Repost,
+        null,
         null,
         null,
         null,
@@ -178,6 +189,7 @@ fun main() {
         null,
         null,
         null,
+        null,
         null
     )
    val updatedPost2 = Post(3,
@@ -193,6 +205,7 @@ fun main() {
        null,
        Like,
        Repost,
+       null,
        null,
        null,
        null,
