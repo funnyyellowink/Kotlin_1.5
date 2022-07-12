@@ -3,14 +3,13 @@ import javax.swing.text.StyledEditorKit.BoldAction
 data class Post (
     var id: Int,
     var ownerId: Int,
-    var fromId: Int?,
-    var createdBy: Int?,
+
     val date: Int,
     var text: String,
     var replyOwnerId: Int?,
     var replyPostId: Int?,
     var friendsOnly: Boolean?,
-    var comments: Array<Comment>?,
+    var comments: Array<Comment>,
     var copyright: Copyright?,
     var likes: Like,
     var reposts: Repost,
@@ -19,17 +18,21 @@ data class Post (
     var postSource: PostSource?,
     var geo: Geo?,
     var signerId: Int?,
-    var copyHistory: Array<Repost>?,
-    var canPin: Boolean?,
-    var canDelete: Boolean?,
-    var canEdit: Boolean?,
-    var isPinned: Boolean?,
-    var markedAsAds: Boolean?,
-    var isFavourite: Boolean?,
     var donut: Donut?,
-    var postponedId: Int?,
-    var attachments: Array<Attachment>?
-)
+) {
+    var fromId: Int = ownerId
+    var createdBy: Int = ownerId
+    var copyHistory: Array<Repost> = emptyArray()
+    var canPin: Boolean = false
+    var canDelete: Boolean = false
+    var canEdit: Boolean = false
+    var isPinned: Boolean = false
+    var markedAsAds: Boolean = false
+    var isFavourite: Boolean = false
+    //Donut
+    var postponedId: Int = 0
+    var attachments: Array<Attachment> = emptyArray()
+}
 class Comment (
     var id: Int,
     var fromId: Int?,
@@ -38,8 +41,8 @@ class Comment (
     var donut: Donut?,
     var replyToUser : Int?,
     var replyToComment: Int?,
-    var attachments: Array<Attachment>?
 ) {
+    private var attachments = emptyArray<Attachment>()
     override fun toString() : String {
         return "$id + $text"
     }
@@ -97,8 +100,9 @@ object WallService {
                                     reposts = post.reposts
                 )
                 posts[index] = updatedPost
+                println("${posts[index].text}")
             } else {
-                println("couldnt find such post")
+                println("couldn't find such post")
                 existenceOfPost = false
             }
         }
@@ -107,7 +111,10 @@ object WallService {
     fun clear() {
         WallService.posts = emptyArray()
     }
-    fun findById (id: Int) : Post{
+    fun clearComments() {
+        WallService.comments = emptyArray()
+    }
+    private fun findById (id: Int) : Post{
         for (post in posts) {
             if (post.id == id) {
                 return post
@@ -115,14 +122,13 @@ object WallService {
         }
         throw PostNotFoundException("post $id")
     }
-    fun createComment(postId: Int,comment: Comment)  {
+    fun createComment(postId: Int,comment: Comment) : Comment? {
         try {
-            println("comment is ${comment.text}")
-            val postToComment = findById(postId).copy(id = postId, comments = findById(postId).comments?.plus(comment))
-            posts[postId].comments?.plusElement(comment)
-            println("${postToComment.comments?.last()?.text}")
-            println("${posts[postId].comments?.last()?.text}")
+            val result = findById(postId).comments.plusElement(comment)
+            println("${result.last().text}")
+            return result.last()
         } catch (e: PostNotFoundException) { println("post not found") }
+        return null
     }
 }
 
@@ -133,14 +139,12 @@ fun main() {
     val post1 = Post(
         1,
         1,
-        1,
-        1,
         1072022,
         "Post number one",
         null,
         null,
         null,
-        null,
+        emptyArray(),
         null,
         Like,
         Repost,
@@ -149,40 +153,20 @@ fun main() {
         null,
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        attachments = arrayOf(photoAttachment)
+        null
     )
     WallService.add(post1)
     val post2= Post(2,
-        1,
-        1,
         1,
         1072022,
         "Post number two",
         null,
         null,
         null,
-        null,
+        emptyArray(),
         null,
         Like,
         Repost,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
         null,
         null,
         null,
@@ -193,14 +177,12 @@ fun main() {
     WallService.add(post2)
     val updatedPost1 = Post(1,
         1,
-        1,
-        1,
         1072022,
         "New post number one",
         null,
         null,
         null,
-        null,
+        emptyArray(),
         null,
         Like,
         Repost,
@@ -210,26 +192,15 @@ fun main() {
         null,
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
     )
    val updatedPost2 = Post(3,
-       1,
-       1,
        1,
        1072022,
        "Bad new post number one",
        null,
        null,
        null,
-       null,
+       emptyArray(),
        null,
        Like,
        Repost,
@@ -239,20 +210,11 @@ fun main() {
        null,
        null,
        null,
-       null,
-       null,
-       null,
-       null,
-       null,
-       null,
-       null,
-       null,
-       null
    )
-    //WallService.update(updatedPost1)
-    //WallService.update(updatedPost2)
-    val comment = Comment(1,1,20220705,"first comment",null,null,null,null)
-    //println(comment.text)
+    post1.attachments.plusElement(photoAttachment)
+    WallService.update(updatedPost1)
+    WallService.update(updatedPost2)
+    val comment = Comment(1,1,20220705,"first comment",null,null,null)
     WallService.createComment(1,comment)
-    //WallService.createComment(3,comment)
+    WallService.createComment(3,comment)
 }
