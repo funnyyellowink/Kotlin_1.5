@@ -10,7 +10,7 @@ data class Post (
     var replyOwnerId: Int?,
     var replyPostId: Int?,
     var friendsOnly: Boolean?,
-    var comments: Comment?,
+    var comments: Array<Comment>?,
     var copyright: Copyright?,
     var likes: Like,
     var reposts: Repost,
@@ -30,9 +30,21 @@ data class Post (
     var postponedId: Int?,
     var attachments: Array<Attachment>?
 )
-object Comment {
-    //TODO
+class Comment (
+    var id: Int,
+    var fromId: Int?,
+    var date: Int,
+    var text: String,
+    var donut: Donut?,
+    var replyToUser : Int?,
+    var replyToComment: Int?,
+    var attachments: Array<Attachment>?
+) {
+    override fun toString() : String {
+        return "$id + $text"
+    }
 }
+class PostNotFoundException(message: String): RuntimeException(message)
 object Copyright {
     //TODO
 }
@@ -59,17 +71,17 @@ object Donut {
 }
 object WallService {
     private var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
     fun add(post: Post): Post {
         posts += post.copy(id = posts.size + 1)
         println(
-            "Added ${post.ownerId}`s post: " +
+            "Added ${post.ownerId}`s post: " + "${post.id}" +
                     "\nPost: ${post.text}, posted at ${post.date}" +
                     "\nLiked: ${post.likes.count}, reposted: ${post.reposts.count} " +
                     "\n_____"
         )
         return posts.last()
     }
-
     fun update(post: Post): Boolean {
         var existenceOfPost = false
         for ((index, oldPost) in posts.withIndex()) {
@@ -89,12 +101,26 @@ object WallService {
                 println("couldnt find such post")
                 existenceOfPost = false
             }
-
         }
         return existenceOfPost
     }
     fun clear() {
         WallService.posts = emptyArray()
+    }
+    fun findById (id: Int) : Post{
+        for (post in posts) {
+            if (post.id == id) {
+                return post
+            }
+        }
+        throw PostNotFoundException("post $id")
+    }
+    fun createComment(postId: Int,comment: Comment)  {
+        try {
+            println("comment is ${comment.text}")
+            val postToComment = findById(postId).copy(id = postId, comments = findById(postId).comments?.plus(comment))
+            println("${postToComment.comments?.last()?.text}")
+        } catch (e: PostNotFoundException) { println("post not found") }
     }
 }
 
@@ -221,6 +247,10 @@ fun main() {
        null,
        null
    )
-    WallService.update(updatedPost1)
-    WallService.update(updatedPost2)
+    //WallService.update(updatedPost1)
+    //WallService.update(updatedPost2)
+    val comment = Comment(1,1,20220705,"first comment",null,null,null,null)
+    //println(comment.text)
+    WallService.createComment(1,comment)
+    //WallService.createComment(3,comment)
 }
