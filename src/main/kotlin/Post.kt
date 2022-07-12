@@ -119,7 +119,9 @@ object WallService {
         try {
             println("comment is ${comment.text}")
             val postToComment = findById(postId).copy(id = postId, comments = findById(postId).comments?.plus(comment))
+            posts[postId].comments?.plusElement(comment)
             println("${postToComment.comments?.last()?.text}")
+            println("${posts[postId].comments?.last()?.text}")
         } catch (e: PostNotFoundException) { println("post not found") }
     }
 }
